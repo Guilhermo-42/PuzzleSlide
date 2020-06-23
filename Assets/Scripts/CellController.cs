@@ -6,13 +6,21 @@ public class CellController : MonoBehaviour
 
     private GameObject emptyCell;
 
-    public int correctPosition;
-
     public bool isOnCorrectPosition;
+
+    public Vector2 correctPosition;
+
+    private bool isDemoMode;
 
     void Start()
     {
         emptyCell = GameObject.FindGameObjectWithTag("Placeholder");
+
+        isDemoMode = FindObjectOfType<GameMaster>().isDemoMode;
+        if (isDemoMode)
+        {
+            isOnCorrectPosition = true;
+        }
     }
 
     private void OnMouseDown()
@@ -59,7 +67,14 @@ public class CellController : MonoBehaviour
         transform.position = Vector2.Lerp(transform.position, emptyCell.transform.position, 10f);
         emptyCell.transform.position = Vector2.Lerp(emptyCell.transform.position, currentPosition, 10f);
 
-        //Here we should update the isOnCorrectPosition variable based on the position (???)
+        Vector2 currentLocalPosition = transform.localPosition;
+
+        isOnCorrectPosition = currentLocalPosition == correctPosition;
+
+        if (isDemoMode)
+        {
+            isOnCorrectPosition = true;
+        }
 
         FindObjectOfType<GameMaster>().CheckGameFinished();
     }
